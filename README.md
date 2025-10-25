@@ -1,5 +1,9 @@
 # Invoice-MatchAI — Smart Reconciliation of Freight Invoices vs. Rate Tables
 
+![Python](https://img.shields.io/badge/Made%20with-Python-blue?logo=python)
+![Status](https://img.shields.io/badge/Status-Production--Ready-success)
+
+
 ## Overview
 Invoice-MatchAI is a Python-based audit engine that validates carrier freight invoices against negotiated contract rate tables.
 
