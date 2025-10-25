@@ -1,0 +1,4 @@
+invoice_id,load_id,origin,destination,miles_billed,rate_billed_per_mile,fuel_surcharge_pct,accessorial_desc,accessorial_amount
+INV-1001,LD-7781,"Buffalo, NY","Columbus, OH",312,2.15,34.0,"Lift Gate Service",95.00
+INV-1002,LD-7782,"Buffalo, NY","Columbus, OH",312,2.15,37.0,"Liftgate svc",125.00
+INV-1003,LD-7783,"Toledo, OH","Detroit, MI",62,3.05,29.0,"Hazmat Handling",80.00
