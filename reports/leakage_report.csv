@@ -1,0 +1,6 @@
+shipment_id,customer_id,ship_date,origin_zip,destination_zip,distance_miles,weight_lb,freight_class,liftgate_required,liftgate_fee_charged,fuel_surcharge_amount,base_linehaul_amount,actual_billed_total,expected_linehaul_amount,expected_fuel_amount,expected_liftgate_fee,expected_billed_total,underbilled_amount,is_underbilled,is_missing_fuel,is_liftgate_dropped,is_duplicate,flag_reason
+SHP 1.00,CUST_A,2025-10-01,14225,33101,1300,1800,55,True,0,120.0,850.0,970.0,864.0,129.6,75.0,1068.6,98.59999999999991,True,False,True,False,UNDERBILLED; LIFTGATE_NOT_CHARGED
+SHP 2.00,CUST_A,2025-10-01,14225,8854,320,900,70,False,0,28.0,260.0,288.0,316.8,31.680000000000003,0.0,348.48,60.48000000000002,True,False,False,False,UNDERBILLED
+SHP 3.00,CUST_B,2025-10-02,10001,94105,2900,2200,60,True,75,240.0,1350.0,1665.0,1056.0,158.4,75.0,1289.4,-375.5999999999999,False,False,False,False,
+SHP 4.00,CUST_B,2025-10-02,10001,94105,2900,2200,60,True,0,240.0,1350.0,1590.0,1056.0,158.4,75.0,1289.4,-300.5999999999999,False,False,True,False,LIFTGATE_NOT_CHARGED
+SHP 5.00,CUST_C,2025-10-03,60601,30301,720,400,92,False,0,44.0,190.0,210.0,172.8,17.28,0.0,190.08,-19.919999999999987,False,False,False,False,
