@@ -1,0 +1,6 @@
+shipment_id,customer_id,ship_date,origin_zip,destination_zip,distance_miles,weight_lb,freight_class,liftgate_required,liftgate_fee_charged,fuel_surcharge_amount,base_linehaul_amount,actual_billed_total
+SHP 1.00,CUST_A,2025-10-01,14225,33101,1300,1800,55,TRUE,0,120.00,850.00,970.00
+SHP 2.00,CUST_A,2025-10-01,14225,8854,320,900,70,FALSE,0,28.00,260.00,288.00
+SHP 3.00,CUST_B,2025-10-02,10001,94105,2900,2200,60,TRUE,75,240.00,1350.00,1665.00
+SHP 4.00,CUST_B,2025-10-02,10001,94105,2900,2200,60,TRUE,0,240.00,1350.00,1590.00
+SHP 5.00,CUST_C,2025-10-03,60601,30301,720,400,92,FALSE,0,44.00,190.00,210.00
