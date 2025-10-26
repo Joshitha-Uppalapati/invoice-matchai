@@ -1,4 +1,24 @@
 # 🚚 Invoice-MatchAI  
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-v1.0.0-blue.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/build-passing-brightgreen.svg?style=for-the-badge" alt="Build">
+  <img src="https://img.shields.io/badge/license-MIT-orange.svg?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/python-3.9%2B-blue.svg?style=for-the-badge" alt="Python">
+  <img src="https://img.shields.io/badge/status-Production--Ready-success.svg?style=for-the-badge" alt="Status">
+</p>
+
+---
+
+### 🏷️ Version 1.0.0 — *AI-Infrastructure Refactor*
+This release marks the first production-ready version of **Invoice-MatchAI**, featuring:
+- Modular ingestion, pricing, and rules engine architecture  
+- Real-time leakage detection and financial impact summaries  
+- Audit-ready reporting in CSV and JSON formats  
+- Clean CI/CD-friendly structure ready for cloud deployment  
+
+To cite or reference this version, use:
+
 **AI-Driven Revenue Integrity Pipeline for Freight & Logistics**
 
 Invoice-MatchAI automates the reconciliation of freight invoices by comparing **actual billed charges** against **AI-derived expected rates**, identifying underbilling, dropped accessorials, and missed fuel surcharges.  
