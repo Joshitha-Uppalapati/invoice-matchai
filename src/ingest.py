@@ -1,5 +1,5 @@
 import pandas as pd
-from .schema import REQUIRED_COLUMNS  # <-- this line is important
+from .schema import REQUIRED_COLUMNS 
 
 def load_invoice_data(csv_path: str) -> pd.DataFrame:
     """Load invoice CSV, validate schema, and normalize datatypes."""
@@ -9,7 +9,6 @@ def load_invoice_data(csv_path: str) -> pd.DataFrame:
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
 
-    # Booleans
     if "liftgate_required" in df.columns:
         df["liftgate_required"] = (
             df["liftgate_required"]
@@ -18,7 +17,6 @@ def load_invoice_data(csv_path: str) -> pd.DataFrame:
             .isin(["true","1","yes","y"])
         )
 
-    # Numerics
     numeric_cols = [
         "distance_miles","weight_lb","liftgate_fee_charged",
         "fuel_surcharge_amount","base_linehaul_amount","actual_billed_total"
@@ -26,7 +24,6 @@ def load_invoice_data(csv_path: str) -> pd.DataFrame:
     for col in numeric_cols:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    # Dates
     if "ship_date" in df.columns:
         df["ship_date"] = pd.to_datetime(df["ship_date"], errors="coerce")
 
