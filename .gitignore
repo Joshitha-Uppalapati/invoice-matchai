@@ -1,4 +1,4 @@
-# Byte-compiled / cache
+# Python cache
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -8,28 +8,19 @@ __pycache__/
 venv/
 env/
 
-# Jupyter checkpoints
+# Jupyter
 .ipynb_checkpoints/
 
-# Local output reports
-reports/*.csv
-reports/*.json
-
-# OS junk
-.DS_Store
-.DS_Store
+# Generated reports
 reports/
-data/freight_invoices_10k.csv
 
-# generated datasets
+# Generated datasets
 freight_invoices_*.csv
 data/freight_invoices_*.csv
 
-# keep small tracked sample
+# Keep tracked sample dataset
 !data/freight_invoices_1k.csv
-# macOS
+
+# macOS junk
 .DS_Store
 **/.DS_Store
-
-# outputs
-reports/
