@@ -1,4 +1,3 @@
-cat > scripts/demo.sh <<'SH'
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -9,4 +8,3 @@ PYTHONPATH=. python3 -m src.run_pipeline --data data/freight_invoices_1k.csv
 echo
 echo "Outputs:"
 ls -la reports
-SH
