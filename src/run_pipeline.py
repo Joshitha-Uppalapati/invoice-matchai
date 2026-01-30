@@ -96,7 +96,13 @@ def _write_explanations(
     print(f"Explanations written to: {exp_csv} and {exp_jsonl}")
 
 
-def run_pipeline(data_path: str, out_dir: str, seed: int, use_llm: bool, llm_model: str) -> None:
+def run_pipeline(
+    data_path: str,
+    out_dir: str,
+    seed: int,
+    use_llm: bool = False,
+    llm_model: str = "gpt-4o-mini",
+) -> None:
     os.makedirs(out_dir, exist_ok=True)
 
     df = load_invoice_data(data_path)
