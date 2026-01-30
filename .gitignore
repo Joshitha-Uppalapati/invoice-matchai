@@ -30,3 +30,6 @@ data/freight_invoices_*.csv
 # macOS
 .DS_Store
 **/.DS_Store
+
+# outputs
+reports/
