@@ -4,7 +4,7 @@ import os
 from src.ingest import load_invoice_data
 from src.rate_engine import compute_expected_billing
 from src.rules_engine import apply_leakage_rules
-from src.reporting import write_leakage_report, write_summary_metrics
+from src.reporting import generate_leakage_report, generate_summary_metrics
 from src.anomaly import run_anomaly_detection
 
 
@@ -26,8 +26,9 @@ def run_pipeline(
     summary_metrics_path = os.path.join(reports_dir, "summary_metrics.json")
     anomaly_report_path = os.path.join(reports_dir, "anomaly_report.csv")
 
-    write_leakage_report(flagged, leakage_report_path)
-    write_summary_metrics(flagged, summary_metrics_path)
+    generate_leakage_report(flagged, leakage_report_path)
+    generate_summary_metrics(flagged, summary_metrics_path)
+
 
     adf = run_anomaly_detection(df, contamination=contamination)
     top = adf[adf["anomaly_flag"]].copy()
