@@ -5,7 +5,7 @@ import os
 import pandas as pd
 
 from src.ingest import load_invoice_data
-from src.rate_engine import compute_expected_charges
+from src.rate_engine import compute_expected_billing
 from src.rules_engine import apply_leakage_rules
 from src.reporting import summarize_leakage
 
@@ -49,7 +49,7 @@ def run_pipeline(data_path: str, out_dir: str, seed: int) -> None:
     os.makedirs(out_dir, exist_ok=True)
 
     df = load_invoice_data(data_path)
-    df = compute_expected_charges(df)
+    df = compute_expected_billing(df)
     df = apply_leakage_rules(df)
 
     leakage_report_path = os.path.join(out_dir, "leakage_report.csv")
