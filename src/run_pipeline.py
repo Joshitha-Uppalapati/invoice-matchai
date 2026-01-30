@@ -6,8 +6,7 @@ import pandas as pd
 import os
 import json
 
-def run_pipeline():
-    data_path = "data/sample_invoices.csv"
+def run_pipeline(data_path="data/freight_invoices_1k.csv"):
     output_dir = "reports"
     os.makedirs(output_dir, exist_ok=True)
 
