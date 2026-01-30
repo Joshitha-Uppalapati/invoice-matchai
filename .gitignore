@@ -24,3 +24,6 @@ data/freight_invoices_10k.csv
 # generated datasets
 freight_invoices_*.csv
 data/freight_invoices_*.csv
+
+# keep small tracked sample
+!data/freight_invoices_1k.csv
