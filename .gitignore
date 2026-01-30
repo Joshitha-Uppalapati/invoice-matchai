@@ -27,3 +27,6 @@ data/freight_invoices_*.csv
 
 # keep small tracked sample
 !data/freight_invoices_1k.csv
+# macOS
+.DS_Store
+**/.DS_Store
