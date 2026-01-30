@@ -19,3 +19,8 @@ reports/*.json
 .DS_Store
 .DS_Store
 reports/
+data/freight_invoices_10k.csv
+
+# generated datasets
+freight_invoices_*.csv
+data/freight_invoices_*.csv
