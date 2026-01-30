@@ -68,7 +68,9 @@ flowchart LR
     D --> E[Audit Outputs]
 ```
 
-Each stage is isolated and testable.
+- Each stage is isolated and testable.
+- Isolation Forest anomaly detection for statistical outlier discovery
+
 
 ---
 

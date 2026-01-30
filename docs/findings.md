@@ -84,27 +84,40 @@ operations because it depends on field execution, not just pricing logic.
 
 ---
 
-## Anomaly Detection Insights
-IsolationForest was applied across numeric shipment features:
+## Anomaly Detection Layer
+Beyond deterministic rule-based checks, the system applies Isolation Forest to detect statistical outliers across key billing features:
 
-- distance
-- weight
-- linehaul
-- fuel
-- total billed
+- distance_miles
+- weight_lb
+- base_linehaul_amount
+- fuel_surcharge_amount
+- actual_billed_total
 
-The anomaly detector surfaced outliers that did not always trigger rule-based
-flags but represented suspicious billing patterns.
+This adds a second detection layer focused on pattern deviation rather than predefined thresholds.
 
-Observed characteristics:
+### Anomaly Results
+- 5% contamination threshold (~50 shipments flagged)
+- 23 anomalies overlapped with rule-based leakage flags
+- 27 shipments passed rule checks but showed abnormal pricing structure
 
-- unusually high billed totals relative to distance
-- abnormal fuel-to-linehaul ratios
+Common anomaly patterns included:
+- unusually high fuel-to-linehaul ratios
 - extreme weight-to-price combinations
+- distance-to-cost mismatches
+- edge cases near rule thresholds
 
-These anomalies represent invoices worth manual review even when they pass
-strict rules. In real audit workflows, this hybrid approach (rules + anomaly
-screening) reduces false negatives.
+This demonstrates a hybrid detection advantage:
+
+Rules catch known billing errors.  
+Isolation Forest surfaces suspicious edge cases rules cannot express cleanly.
+
+In real logistics auditing, these edge cases often represent:
+- pricing drift
+- contract misconfiguration
+- carrier-specific billing quirks
+- silent leakage not visible to static rules
+
+The anomaly layer acts as an early warning system rather than a final verdict.
 
 ---
 
