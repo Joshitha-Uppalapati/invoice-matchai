@@ -18,6 +18,15 @@ This repo is not just a script. It models a simplified version of a real freight
 
 This mirrors the architecture used in logistics revenue integrity platforms.
 
+## Real Results (1k Shipment Run)
+- 4.7% shipments flagged
+- $8.5k simulated recoverable leakage
+- 100% precision
+- 71% recall
+- Automated anomaly detection + explanations
+
+See: docs/findings.md
+
 ---
 ## Quick demo
 Run the full pipeline:
