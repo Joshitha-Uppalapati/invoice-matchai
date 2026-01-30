@@ -1,78 +1,104 @@
 import argparse
+import json
 import os
 
+import pandas as pd
+
 from src.ingest import load_invoice_data
-from src.rate_engine import compute_expected_billing
+from src.rate_engine import compute_expected_charges
 from src.rules_engine import apply_leakage_rules
-from src.reporting import generate_leakage_report, generate_summary_metrics
-from src.anomaly import run_anomaly_detection
+from src.reporting import summarize_leakage
+
+try:
+    from sklearn.ensemble import IsolationForest
+except Exception:
+    IsolationForest = None
 
 
-def run_pipeline(
-    data_path: str,
-    reports_dir: str,
-    contamination: float,
-) -> None:
-    df = load_invoice_data(data_path)
+def _write_anomaly_report(df: pd.DataFrame, out_path: str, seed: int) -> None:
+    if IsolationForest is None:
+        return
 
-    if "expected_total" not in df.columns:
-        df = compute_expected_billing(df)
-
-    flagged = apply_leakage_rules(df)
-
-    os.makedirs(reports_dir, exist_ok=True)
-
-    leakage_report_path = os.path.join(reports_dir, "leakage_report.csv")
-    summary_metrics_path = os.path.join(reports_dir, "summary_metrics.json")
-    anomaly_report_path = os.path.join(reports_dir, "anomaly_report.csv")
-
-    generate_leakage_report(flagged, leakage_report_path)
-    generate_summary_metrics(flagged, summary_metrics_path)
-
-
-    adf = run_anomaly_detection(df, contamination=contamination)
-    top = adf[adf["anomaly_flag"]].copy()
-
-    cols = [
-        "invoice_id",
-        "carrier",
+    df = df.copy()
+    num_cols = [
         "distance_miles",
-        "weight_lbs",
-        "expected_total",
-        "actual_total_billed",
-        "leakage_amount",
-        "error_injected",
-        "anomaly_score",
+        "weight_lb",
+        "base_linehaul_amount",
+        "fuel_surcharge_amount",
+        "actual_billed_total",
     ]
-    cols = [c for c in cols if c in top.columns]
-    top = top.sort_values("anomaly_score").head(200)[cols]
-    top.to_csv(anomaly_report_path, index=False)
+    for c in num_cols:
+        if c not in df.columns:
+            return
 
-    total = len(df)
-    flagged_n = int((flagged["flag_reason"].fillna("") != "").sum())
-    leakage = float(flagged["underbilled_amount"].clip(lower=0).sum())
+    X = df[num_cols].apply(pd.to_numeric, errors="coerce").fillna(0.0)
+    model = IsolationForest(n_estimators=200, contamination=0.05, random_state=seed)
+    pred = model.fit_predict(X)
+    scores = model.score_samples(X)
+
+    out = df.copy()
+    out["anomaly_flag"] = (pred == -1)
+    out["anomaly_score"] = scores
+
+    cols = ["shipment_id", "carrier", "actual_billed_total", "anomaly_flag", "anomaly_score"]
+    cols = [c for c in cols if c in out.columns]
+    out.sort_values("anomaly_score", ascending=True)[cols].to_csv(out_path, index=False)
+
+
+def run_pipeline(data_path: str, out_dir: str, seed: int) -> None:
+    os.makedirs(out_dir, exist_ok=True)
+
+    df = load_invoice_data(data_path)
+    df = compute_expected_charges(df)
+    df = apply_leakage_rules(df)
+
+    leakage_report_path = os.path.join(out_dir, "leakage_report.csv")
+    summary_metrics_path = os.path.join(out_dir, "summary_metrics.json")
+    anomaly_report_path = os.path.join(out_dir, "anomaly_report.csv")
+
+    flagged = df[df["flag_reason"].fillna("") != ""].copy()
+    cols = ["shipment_id", "flag_reason", "underbilled_amount"]
+    cols = [c for c in cols if c in flagged.columns]
+    flagged[cols].to_csv(leakage_report_path, index=False)
+
+    summary = summarize_leakage(df)
+    with open(summary_metrics_path, "w") as f:
+        json.dump(summary, f, indent=2)
+
+    _write_anomaly_report(df, anomaly_report_path, seed)
 
     print("=== PIPELINE SUMMARY ===")
-    print(f"Total shipments: {total}")
-    print(f"Flagged shipments: {flagged_n} ({flagged_n/total*100:.1f}%)")
-    print(f"Est. leakage $: {leakage:.2f}")
+    print(f"Total shipments: {summary['total_shipments']}")
+    print(
+        f"Flagged shipments: {summary['flagged_shipments']} ({summary['flag_rate_pct']}%)"
+    )
+    print(f"Est. leakage $: {summary['estimated_revenue_leakage_usd']}")
     print(f"Leakage report written to: {leakage_report_path}")
     print(f"Summary metrics written to: {summary_metrics_path}")
-    print(f"Anomaly report written to: {anomaly_report_path}")
+    if os.path.exists(anomaly_report_path):
+        print(f"Anomaly report written to: {anomaly_report_path}")
 
 
 def main() -> None:
-    p = argparse.ArgumentParser()
-    p.add_argument("--data", default="data/freight_invoices_1k.csv")
-    p.add_argument("--reports-dir", default="reports")
-    p.add_argument("--contamination", type=float, default=0.06)
-    args = p.parse_args()
-
-    run_pipeline(
-        data_path=args.data,
-        reports_dir=args.reports_dir,
-        contamination=args.contamination,
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--data",
+        default="data/freight_invoices_1k.csv",
+        help="Path to input CSV",
     )
+    parser.add_argument(
+        "--outdir",
+        default="reports",
+        help="Output directory",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed (anomaly model)",
+    )
+    args = parser.parse_args()
+    run_pipeline(args.data, args.outdir, args.seed)
 
 
 if __name__ == "__main__":
