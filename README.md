@@ -136,6 +136,18 @@ This system models real scenarios such as:
 
 ---
 
+## LLM Explanations
+
+The pipeline supports optional AI-generated explanations for flagged invoices. This feature requires an OpenAI API key.
+
+To enable AI explanations:
+export OPENAI_API_KEY=your_key
+python -m src.run_pipeline --llm
+
+If no API key is provided, the system automatically falls back to rule-based explanations and continues running without error.
+
+---
+
 ## Roadmap
 - anomaly detection on pricing drift
 - dashboard for leakage analytics
@@ -147,7 +159,6 @@ This system models real scenarios such as:
 
 ## Author
 Joshitha Uppalapati  
-https://github.com/Joshitha-Uppalapati  
 https://linkedin.com/in/joshitha-uppalapati
 
 ---
