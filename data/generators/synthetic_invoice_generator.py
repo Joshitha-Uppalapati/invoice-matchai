@@ -9,7 +9,8 @@ Features:
 - Realistic accessorial charges
 - Intentional errors (5-10% of invoices)
 """
-
+import argparse
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -304,27 +305,39 @@ class FreightInvoiceGenerator:
 
 
 def main():
-    """Generate dataset and save to CSV."""
-    print("🚚 Generating 10,000 synthetic freight invoices...")
-    
-    generator = FreightInvoiceGenerator(seed=42)
-    df = generator.generate_invoices(n=10000, error_rate=0.08)
-    
-    # Save to CSV
-    output_file = 'freight_invoices_10k.csv'
-    df.to_csv(output_file, index=False)
-    
-    print(f"✅ Generated {len(df)} invoices")
-    print(f"📊 Dataset saved to: {output_file}")
-    print(f"\n📈 DATASET STATISTICS:")
+    parser = argparse.ArgumentParser(description="Generate synthetic freight invoices")
+    parser.add_argument("--out", type=str, default="data/freight_invoices_10k.csv", help="Output CSV path")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument("--n", type=int, default=10000, help="Number of invoices")
+    parser.add_argument("--error-rate", type=float, default=0.08, help="Fraction of invoices with injected errors")
+    args = parser.parse_args()
+
+    print(f"Generating {args.n:,} synthetic freight invoices...")
+
+    generator = FreightInvoiceGenerator(seed=args.seed)
+    df = generator.generate_invoices(n=args.n, error_rate=args.error_rate)
+
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(out_path, index=False)
+
+    print(f"Generated {len(df)} invoices")
+    print(f"Dataset saved to: {out_path}")
+
+    print(f"\n DATASET STATISTICS:")
     print(f"   Total freight spend: ${df['actual_total_billed'].sum():,.2f}")
     print(f"   Invoices with errors: {df['has_leakage'].sum()} ({df['has_leakage'].mean()*100:.1f}%)")
     print(f"   Total leakage: ${df['leakage_amount'].sum():,.2f}")
     print(f"   Average leakage per flagged invoice: ${df[df['has_leakage']]['leakage_amount'].mean():.2f}")
-    print(f"\n🔍 ERROR BREAKDOWN:")
+
+    print(f"\n ERROR BREAKDOWN:")
     print(df[df['error_injected'] != 'none']['error_injected'].value_counts())
-    print(f"\n💰 TOP 5 LEAKAGE INVOICES:")
-    print(df.nlargest(5, 'leakage_amount')[['invoice_id', 'carrier', 'distance_miles', 'actual_total_billed', 'leakage_amount', 'error_injected']])
+
+    print(f"\n TOP 5 LEAKAGE INVOICES:")
+    print(df.nlargest(5, 'leakage_amount')[[
+        'invoice_id', 'carrier', 'distance_miles',
+        'actual_total_billed', 'leakage_amount', 'error_injected'
+    ]])
 
 
 if __name__ == '__main__':
